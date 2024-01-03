@@ -1,56 +1,45 @@
 import unittest
+from typing import List
+
+def generate_permutations(nums: List[int]) -> List[List[int]]:
+    if len(nums) <= 1:
+        return [nums]
+    
+    result = []
+    for i in range(len(nums)):
+        remaining = nums[:i] + nums[i+1:]
+        for perm in generate_permutations(remaining):
+            result.append([nums[i]] + perm)
+    
+    return result
+
+    
+class TestGeneratePermutations(unittest.TestCase):
+    def test_generate_permutations(self):
+        nums1 = [1, 2, 3]
+        expected_output1 = [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+        self.assertEqual(generate_permutations(nums1), expected_output1)
+        
+        nums2 = [4, 5, 6, 7]
+        expected_output2 = [[4, 5, 6, 7], [4, 5, 7, 6], [4, 6, 5, 7], [4, 6, 7, 5], [4, 7, 5, 6], [4, 7, 6, 5], [5, 4, 6, 7], [5, 4, 7, 6], [5, 6, 4, 7], [5, 6, 7, 4], [5, 7, 4, 6], [5, 7, 6, 4], [6, 4, 5, 7], [6, 4, 7, 5], [6, 5, 4, 7], [6, 5, 7, 4], [6, 7, 4, 5], [6, 7, 5, 4], [7, 4, 5, 6], [7, 4, 6, 5], [7, 5, 4, 6], [7, 5, 6, 4], [7, 6, 4, 5], [7, 6, 5, 4]]
+        self.assertEqual(generate_permutations(nums2), expected_output2)
+        
+        nums3 = [0]
+        expected_output3 = [[0]]
+        self.assertEqual(generate_permutations(nums3), expected_output3)
+        
+        nums4 = [9, 2, 6]
+        expected_output4 = [[9, 2, 6], [9, 6, 2], [2, 9, 6], [2, 6, 9], [6, 9, 2], [6, 2, 9]]
+        self.assertEqual(generate_permutations(nums4), expected_output4)
+        
+        nums5 = [-1, 0, 1]
+        expected_output5 = [[-1, 0, 1], [-1, 1, 0], [0, -1, 1], [0, 1, -1], [1, -1, 0], [1, 0, -1]]
+        self.assertEqual(generate_permutations(nums5), expected_output5)
+        
+
+def main():
+    unittest.main(argv=[''], exit=False)
 
 
-def add(x, y):
-    return x + y
-
-
-def subtract(x, y):
-    return x - y
-
-
-def multiply(x, y):
-    return x * y
-
-
-def divide(x, y):
-    if y == 0:
-        raise ZeroDivisionError("Error: Division by zero")
-    return x / y
-
-
-class Calculator(unittest.TestCase):
-    def test_add(self):
-        self.assertEqual(add(5, 2), 7)
-        self.assertEqual(add(-3, 5), 2)
-        self.assertEqual(add(0, 0), 0)
-        self.assertEqual(add(100, -100), 0)
-        self.assertEqual(add(2.5, 3.7), 6.2)
-
-    def test_subtract(self):
-        self.assertEqual(subtract(5, 2), 3)
-        self.assertEqual(subtract(-3, 5), -8)
-        self.assertEqual(subtract(0, 0), 0)
-        self.assertEqual(subtract(100, -100), 200)
-        self.assertEqual(subtract(2.5, 1.7), 0.8)
-
-    def test_multiply(self):
-        self.assertEqual(multiply(5, 2), 10)
-        self.assertEqual(multiply(-3, 5), -15)
-        self.assertEqual(multiply(0, 0), 0)
-        self.assertEqual(multiply(100, -100), -10000)
-        self.assertEqual(multiply(2.5, 3.7), 9.25)
-
-    def test_divide(self):
-        self.assertEqual(divide(10, 2), 5)
-        self.assertEqual(divide(-15, 5), -3)
-        self.assertEqual(divide(0, 5), 0)
-        self.assertEqual(divide(100, -10), -10)
-        self.assertEqual(divide(2.5, 1.25), 2)
-
-        with self.assertRaises(ZeroDivisionError):
-            divide(10, 0)
-
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == '__main__':
+    main()
