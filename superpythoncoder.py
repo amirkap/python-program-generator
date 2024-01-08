@@ -1,4 +1,4 @@
-import os, subprocess, random
+import os, subprocess, random, sys
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -27,7 +27,7 @@ PROGRAMS_LIST = [
     "Create a program that finds the kth smallest element in a given binary search tree." ,
     "Create a program that recursively generates all permutations of a given list of unique integers.",
     '''You are given the heads of two sorted linked lists list1 and list2.
-Creata a program that merges the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.
+Create a program that merges the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.
 Return the head of the merged linked list.
   Example 1:
 Input: list1 = [1,2,4], list2 = [1,3,4]
@@ -49,7 +49,7 @@ def get_random_program():
 
 def get_user_prompt():
     # Ask the user for the type of program they want to create
-    user_input = input("Tell me, which program would you like me to code for you? If you don't have an idea, just press enter and I will choose a random program.\n")
+    user_input = input("\nTell me, which program would you like me to code for you? If you don't have an idea, just press enter and I will choose a random program.\n")
     return user_input
   
 def get_full_prompt():
@@ -94,7 +94,7 @@ def extract_code(response_content):
 def write_and_execute_program(generated_code):
   with open('generatedcode.py', 'w', encoding='utf-8') as file:
       file.write(generated_code)
-  subprocess.run(['python3.11', 'generatedcode.py']) 
+  subprocess.run([sys.executable, 'generatedcode.py']) 
   
 def main():
   successful = False
@@ -117,15 +117,15 @@ def main():
     generated_code = extract_code(response_content)
     write_program_to_file(generated_code)
     try:
-      subprocess.run(['python3.11', 'generatedcode.py'], stderr=subprocess.PIPE, check=True, text=True)
+      subprocess.run([sys.executable, 'generatedcode.py'], stderr=subprocess.PIPE, check=True, text=True)
       successful = True
       break
-    except subprocess.CalledProcessError as e: 
+    except subprocess.CalledProcessError as e:
         print(f"Error running main program! Error:\n{e.stderr}")
-        conversation.append({"role": "assistant", "content": response_content})
-        conversation.append( {"role": "user", "content": "I got this error: " + e.stderr + 
-        ". Please fix the code you gave me and show the whole code fixed." \
-        "Return only the code in the completion. " \
+        conversation.append({"role": "assistant", "content": generated_code})
+        conversation.append( {"role": "user", "content": "I got this error:\n" + e.stderr + 
+        "\nPlease fix the code you gave me and show the whole code fixed." \
+        "Return only the fixed code in the completion. " \
         "I don't want any other comments. " \
         "Don't say 'here is your code' or similar remarks."})
         
